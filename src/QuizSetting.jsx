@@ -8,6 +8,18 @@ function QuizSetting({ onBack }) {
   const [difficulty, setDifficulty] = useState("");
   const [type, setType] = useState("");
   const navigate = useNavigate();
+  
+
+const startGame = () => {
+  navigate("/game", {
+    state: {
+      numQuestions,
+      category,
+      difficulty,
+      type,
+    },
+  });
+};
 
   return (
     <div
@@ -98,12 +110,12 @@ function QuizSetting({ onBack }) {
           </label>
 
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full justify-center">
-            <button
-              onClick={() => navigate("/game")}
-              className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
-            >
-              Play
-            </button>
+          <button
+  onClick={startGame}
+  className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
+>
+  Play
+</button>;
             <button
               onClick={onBack}
               className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-gray-400 hover:bg-gray-500"
