@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import QuizSetting from "./QuizSetting";
 import Instruction from "./Instruction";
+import GameStory from "./pages/GameStory.jsx";
 
 function App() {
-  const [screen, setScreen] = useState("home");
-
   return (
-    <div>
-      {screen === "home" && <Home onPlay={() => setScreen("quiz")} onInstructions={() => setScreen("instructions")} />}
-      {screen === "quiz" && <QuizSetting onBack={() => setScreen("home")} />}
-      {screen === "instructions" && <Instruction onBack={() => setScreen("home")} />}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/quiz" element={<QuizSetting />} />
+        <Route path="/instructions" element={<Instruction />} />
+        <Route path="/game" element={<GameStory />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import backImg from "./assets/bg2.png";
 
-function Home({ onPlay, onInstructions }) {
+function Home() {
+  const navigate = useNavigate(); // Hook to navigate between pages
+
   return (
     <div
       className="flex items-center justify-center min-h-screen bg-cover bg-center px-4"
@@ -19,7 +22,7 @@ function Home({ onPlay, onInstructions }) {
         {/* Buttons Section */}
         <div className="flex flex-col items-center space-y-5">
           <button
-            onClick={onPlay} // Calls function to switch screens
+            onClick={() => navigate("/quiz")} // Navigates to quiz settings
             className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
           >
             Play
@@ -28,7 +31,7 @@ function Home({ onPlay, onInstructions }) {
             Create Quiz
           </button>
           <button
-            onClick={onInstructions} // Calls function to show instructions
+            onClick={() => navigate("/instructions")} // Navigates to instructions
             className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-red-500 hover:bg-red-600"
           >
             Instructions
