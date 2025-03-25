@@ -5,6 +5,7 @@ import QuizSetting from "./QuizSetting";
 import Instruction from "./Instruction";
 import GameStory from "./pages/GameStory.jsx"; // Moved out of pages for consistency
 import QuizGame from "./pages/QuizGame.jsx";
+import Result from "./pages/Result.jsx";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/quiz" element={<QuizSetting />} />
         <Route path="/instructions" element={<Instruction />} />
         <Route path="/quizgame" element={<QuizGame />} />
+        <Route path="/result" element={<Result />} />
       </Routes>
     </Router>
   );

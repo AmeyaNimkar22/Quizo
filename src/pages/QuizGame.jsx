@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import backImg from "../assets/spaceship.png";
 
+
 function QuizGame() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,13 +46,21 @@ function QuizGame() {
   // Handle submission of answer
   const handleSubmit = () => {
     if (selectedAnswer) {
+      let newScore = score;
       if (selectedAnswer === questions[currentQuestionIndex].correct_answer) {
-        setScore((prevScore) => prevScore + 10); // ✅ Correct way to update state
+        newScore += 10;
+        setScore(newScore); // Ensure score is updated
       }
   
-      // Move to next question
-      setSelectedAnswer(null);
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      if (currentQuestionIndex + 1 < questions.length) {
+        setSelectedAnswer(null);
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      } else {
+        // Delay navigation slightly to allow state updates
+        setTimeout(() => {
+          navigate("/result", { state: { score: newScore, totalQuestions: questions.length } });
+        }, 100);
+      }
     }
   };
   
@@ -60,6 +69,10 @@ function QuizGame() {
   const handleFinish = () => {
     alert(`Quiz Over! Your final score is: ${score}`);
     navigate("/"); // Redirect to home or another page
+  };
+
+  const handleEndGame = () => {
+    navigate("/result", { state: { score, totalQuestions: questions.length } });
   };
 
   if (loading) {
@@ -81,12 +94,13 @@ function QuizGame() {
       <div className="text-center text-white">
         <h1>Quiz Over!</h1>
         <p>Your final score: {score}</p>
-        <button onClick={handleFinish} className="mt-4 px-6 py-3 bg-yellow-400 rounded">
+        <button onClick={handleEndGame} className="mt-4 px-6 py-3 bg-yellow-400 rounded">
           Finish
         </button>
       </div>
     );
   }
+  
 
   const currentQuestion = questions[currentQuestionIndex];
   const allAnswers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer].sort(() => Math.random() - 0.5);
@@ -98,7 +112,8 @@ function QuizGame() {
         >
       <div className="bg-gray-500 p-6 rounded-lg shadow-lg text-center w-full max-w-xl ">
         <h2 className="text-2xl font-bold text-white">Question {currentQuestionIndex + 1} / {questions.length}</h2>
-        <p className="text-lg mt-4 text-white">{currentQuestion.question}</p>
+        <p className="text-lg mt-4 text-white" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}></p>
+
 
         <div className="mt-4 space-y-2">
           {allAnswers.map((answer, index) => (
