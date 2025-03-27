@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ameyanimkar22.github.io/Quizo",
+  "homepage": "https://AmeyaNimkar22.github.io/Quizo",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
