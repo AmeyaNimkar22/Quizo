@@ -27,9 +27,13 @@ function Home() {
           >
             Play
           </button>
-          <button className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-yellow-400 hover:bg-yellow-500">
-            Create Quiz
-          </button>
+          <button
+  onClick={() => navigate("/create-quiz")} // Navigates to Create Quiz page
+  className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-yellow-400 hover:bg-yellow-500"
+>
+  Create Quiz
+</button>
+
           <button
             onClick={() => navigate("/instructions")} // Navigates to instructions
             className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-red-500 hover:bg-red-600"

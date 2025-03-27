@@ -2,24 +2,27 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backImg from "./assets/bg2.png";
 
-function QuizSetting({ onBack }) {
+function QuizSetting() {
   const [numQuestions, setNumQuestions] = useState(10);
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [type, setType] = useState("");
   const navigate = useNavigate();
-  
 
-const startGame = () => {
-  navigate("/game", {
-    state: {
-      numQuestions,
-      category,
-      difficulty,
-      type,
-    },
-  });
-};
+  const startGame = () => {
+    navigate("/game", {
+      state: {
+        numQuestions,
+        category,
+        difficulty,
+        type,
+      },
+    });
+  };
+
+  const goBack = () => {
+    navigate("/"); // Navigates back to Home.jsx
+  };
 
   return (
     <div
@@ -110,14 +113,14 @@ const startGame = () => {
           </label>
 
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full justify-center">
-          <button
-  onClick={startGame}
-  className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
->
-  Play
-</button>;
             <button
-              onClick={onBack}
+              onClick={startGame}
+              className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
+            >
+              Play
+            </button>
+            <button
+              onClick={goBack}
               className="w-full md:w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-gray-400 hover:bg-gray-500"
             >
               Back
