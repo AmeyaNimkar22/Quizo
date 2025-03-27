@@ -15,7 +15,7 @@ function App() {
   const [quizData, setQuizData] = useState([]); // ✅ Define state for quiz data
 
   return (
-    <Router>
+    <Router basename="/Quizzo/"> {/* Fix for GitHub Pages */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/game" element={<GameStory />} />
