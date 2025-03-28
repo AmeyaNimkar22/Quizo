@@ -1,13 +1,10 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom'; // Import HashRouter
-import './index.css';
-import App from './App.jsx';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <HashRouter> {/* Wrap App inside HashRouter */}
-      <App />
-    </HashRouter>
-  </StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter basename="/Quizo/"> {/* ✅ Keep basename here */}
+    <App />
+  </BrowserRouter>
 );
