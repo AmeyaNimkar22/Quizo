@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import backImg from "../assets/bg2.png"; // Adjust path if needed
+import backImg from "../assets/bg2.png";
 
 function PlayQuiz() {
   const navigate = useNavigate();
@@ -10,14 +10,14 @@ function PlayQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({});
 
-  // Reset state when component mounts (for quiz restart)
   useEffect(() => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
-    setScore(0); // Ensure score resets when playing again
+    setScore(0);
   }, [quizData]);
-  
 
   const handleAnswerSelect = (optionIndex) => {
     setSelectedAnswers((prev) => ({
@@ -27,20 +27,44 @@ function PlayQuiz() {
   };
 
   const handleNext = () => {
-    const isCorrect = selectedAnswers[currentQuestionIndex] === quizData[currentQuestionIndex]?.correctAnswer;
-    
-    // Calculate new score before updating state
+    const isCorrect =
+      selectedAnswers[currentQuestionIndex] ===
+      quizData[currentQuestionIndex]?.correctAnswer;
+
     const newScore = isCorrect ? score + 1 : score;
-  
+
+    setModalContent({
+      question: quizData[currentQuestionIndex]?.questionText,
+      correctAnswer:
+        quizData[currentQuestionIndex]?.options[
+          quizData[currentQuestionIndex]?.correctAnswer
+        ],
+      userAnswer:
+        quizData[currentQuestionIndex]?.options[
+          selectedAnswers[currentQuestionIndex]
+        ],
+    });
+
+    setIsModalOpen(true);
+
     if (currentQuestionIndex < quizData.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setScore(newScore); // Update score for next question
+      setScore(newScore);
     } else {
-      // Navigate immediately with updated score
-      navigate("/results", { state: { score: newScore, total: quizData.length, quizData } });
+      setScore(newScore);
+      setTimeout(() => {
+        navigate("/results", {
+          state: { score: newScore, total: quizData.length, quizData },
+        });
+      }, 2000);
     }
   };
-  
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (currentQuestionIndex < quizData.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    }
+  };
 
   return (
     <div
@@ -85,9 +109,48 @@ function PlayQuiz() {
           onClick={handleNext}
           className="w-44 px-6 py-3 text-black text-lg font-bold uppercase rounded-lg transition duration-300 bg-green-500 hover:bg-green-600"
         >
-          {currentQuestionIndex === quizData.length - 1 ? "Finish Quiz" : "Next"}
+          {currentQuestionIndex === quizData.length - 1
+            ? "Finish Quiz"
+            : "Next"}
         </button>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-2xl w-96 shadow-xl transition-transform duration-300 ease-in-out text-blue-950">
+            <h3
+              className="text-3xl font-semibold"
+              style={{ fontFamily: "'Bungee Shade', cursive" }}
+            >
+              Question Review
+            </h3>
+            <div className="mt-6 space-y-4 text-left">
+              <p className="text-lg">
+                <strong className="text-blue-600">Question:</strong>{" "}
+                {modalContent.question}
+              </p>
+              <p className="text-lg">
+                <strong className="text-blue-600">Your Answer:</strong>{" "}
+                {modalContent.userAnswer}
+              </p>
+              <p className="text-lg">
+                <strong className="text-blue-600">Correct Answer:</strong>{" "}
+                {modalContent.correctAnswer}
+              </p>
+            </div>
+            {/* Close modal on button click or auto-advance */}
+            {currentQuestionIndex < quizData.length - 1 && (
+              <button
+                onClick={closeModal}
+                className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg w-full hover:bg-blue-700 transition duration-200 ease-in-out"
+              >
+                Close
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
