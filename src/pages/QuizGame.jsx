@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import backImg from "../assets/spaceship.png";
 
-
 function QuizGame() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,6 +12,8 @@ function QuizGame() {
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({});
 
   // Fetch questions when the component mounts
   useEffect(() => {
@@ -37,35 +38,39 @@ function QuizGame() {
   
     fetchQuestions();
   }, [numQuestions, category, difficulty, type]);
-  
-  // Handle answer selection
+
   const handleAnswerClick = (answer) => {
     setSelectedAnswer(answer);
   };
 
-  // Handle submission of answer
   const handleSubmit = () => {
     if (selectedAnswer) {
       let newScore = score;
-      if (selectedAnswer === questions[currentQuestionIndex].correct_answer) {
+      const correctAnswer = questions[currentQuestionIndex].correct_answer;
+      if (selectedAnswer === correctAnswer) {
         newScore += 10;
-        setScore(newScore); // Ensure score is updated
+        setScore(newScore);
       }
-  
+
+      setModalContent({
+        question: questions[currentQuestionIndex].question,
+        correctAnswer: correctAnswer,
+        userAnswer: selectedAnswer,
+      });
+
+      setIsModalOpen(true);
+
       if (currentQuestionIndex + 1 < questions.length) {
         setSelectedAnswer(null);
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       } else {
-        // Delay navigation slightly to allow state updates
         setTimeout(() => {
           navigate("/result", { state: { score: newScore, totalQuestions: questions.length } });
         }, 100);
       }
     }
   };
-  
 
-  // Handle quiz completion
   const handleFinish = () => {
     alert(`Quiz Over! Your final score is: ${score}`);
     navigate("/"); // Redirect to home or another page
@@ -78,7 +83,7 @@ function QuizGame() {
   if (loading) {
     return <p className="text-center text-white">Loading questions...</p>;
   }
-  
+
   if (!questions || questions.length === 0) {
     return (
       <div className="text-center text-white">
@@ -87,33 +92,18 @@ function QuizGame() {
       </div>
     );
   }
-  
-
-  if (currentQuestionIndex >= questions.length) {
-    return (
-      <div className="text-center text-white">
-        <h1>Quiz Over!</h1>
-        <p>Your final score: {score}</p>
-        <button onClick={handleEndGame} className="mt-4 px-6 py-3 bg-yellow-400 rounded">
-          Finish
-        </button>
-      </div>
-    );
-  }
-  
 
   const currentQuestion = questions[currentQuestionIndex];
   const allAnswers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer].sort(() => Math.random() - 0.5);
 
   return (
     <div
-          className="flex items-center justify-center min-h-screen bg-cover bg-center px-4"
-          style={{ backgroundImage: `url(${backImg})` }}
-        >
+      className="flex items-center justify-center min-h-screen bg-cover bg-center px-4"
+      style={{ backgroundImage: `url(${backImg})` }}
+    >
       <div className="bg-gray-500 p-6 rounded-lg shadow-lg text-center w-full max-w-xl ">
         <h2 className="text-2xl font-bold text-white">Question {currentQuestionIndex + 1} / {questions.length}</h2>
         <p className="text-lg mt-4 text-white" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}></p>
-
 
         <div className="mt-4 space-y-2">
           {allAnswers.map((answer, index) => (
@@ -134,6 +124,24 @@ function QuizGame() {
           Submit
         </button>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-80 text-center">
+            <h3 className="text-lg font-semibold">Question Review</h3>
+            <p className="mt-2"><strong>Question:</strong> {modalContent.question}</p>
+            <p><strong>Your Answer:</strong> {modalContent.userAnswer}</p>
+            <p><strong>Correct Answer:</strong> {modalContent.correctAnswer}</p>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
